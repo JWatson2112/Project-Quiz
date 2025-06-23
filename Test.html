@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>选择题网站</title>
+<style>
+body {
+    font-family: sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.quiz-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 400px;
+    text-align: center;
+}
+
+button.option {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#feedback {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+</style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 id="question">问题加载中...</h1>
+        <div id="options"></div>
+        <p id="feedback"></p>
+        <button id="nextBtn" style="display:none;">下一题</button>
+    </div>
+
+    <script>
+        const questions = [
+    {
+        question: "中国的首都是哪一座城市？",
+        options: ["上海", "北京", "广州", "深圳"],
+        answer: "北京"
+    },
+    {
+        question: "1 + 1 = ?",
+        options: ["1", "2", "3", "4"],
+        answer: "2"
+    },
+    {
+        question: "哪种动物会飞？",
+        options: ["猫", "狗", "鸟", "兔子"],
+        answer: "鸟"
+    }
+];
+
+let currentQuestionIndex = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const feedbackEl = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+
+function loadQuestion() {
+    const q = questions[currentQuestionIndex];
+    questionEl.textContent = q.question;
+    optionsEl.innerHTML = "";
+    feedbackEl.textContent = "";
+    nextBtn.style.display = "none";
+
+    q.options.forEach(optionText => {
+        const btn = document.createElement("button");
+        btn.textContent = optionText;
+        btn.classList.add("option");
+        btn.onclick = () => checkAnswer(optionText);
+        optionsEl.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected) {
+    const correct = questions[currentQuestionIndex].answer;
+    if (selected === correct) {
+        feedbackEl.textContent = "✅ 正确！";
+        feedbackEl.style.color = "green";
+    } else {
+        feedbackEl.textContent = "❌ 错误，正确答案是：" + correct;
+        feedbackEl.style.color = "red";
+    }
+    document.querySelectorAll(".option").forEach(btn => btn.disabled = true);
+    nextBtn.style.display = "inline-block";
+}
+
+nextBtn.onclick = () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        questionEl.textContent = "🎉 恭喜你完成所有问题！";
+        optionsEl.innerHTML = "";
+        feedbackEl.textContent = "";
+        nextBtn.style.display = "none";
+    }
+};
+
+loadQuestion();
+
+    </script>
+</body>
+</html>
